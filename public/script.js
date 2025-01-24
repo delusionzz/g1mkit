@@ -18,7 +18,13 @@ const sj = new ScramjetController({
 sj.init();
 navigator.serviceWorker.register("./sw.js");
 const connection = new BareMux.BareMuxConnection("/baremux/worker.js");
-connection.setTransport("/ep/index.mjs", [{ wisp: "ws://localhost:4000" }]);
+connection.setTransport("/ep/index.mjs", [
+  {
+    wisp: `${location.protocol === "http" ? "ws" : "wss"}://${
+      location.host
+    }/w/`,
+  },
+]);
 
 const main = document.querySelector("#main");
 const nav = document.querySelector("nav");
