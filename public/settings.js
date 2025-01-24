@@ -4,12 +4,13 @@ const settingsSave = document.querySelector("#settingsSave");
 const settingsClose = document.querySelector("#settingsClose");
 // default settings
 
-const settings = JSON.parse(localStorage.getItem("settings"));
+let settings = JSON.parse(localStorage.getItem("settings"));
 const settingsBtn = document.querySelector("#settingsBtn");
 if (!settings) {
   settings = {
     p: "uv",
   };
+  localStorage.setItem("settings", JSON.stringify(settings));
 }
 
 if (settings.p === "sj") {
