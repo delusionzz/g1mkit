@@ -54,6 +54,16 @@
     <script>
       const input = document.querySelector("input");
       const button = document.querySelector("button");
+      let s = JSON.parse(localStorage.getItem(atob("c2V0dGluZ3M=")));
+
+      if (!s || !s.c || !s.p) {
+        settings = {
+          p: "uv",
+          c: "disabled",
+        };
+        localStorage.setItem(atob("c2V0dGluZ3M="), JSON.stringify(settings));
+        s = JSON.parse(localStorage.getItem(atob("c2V0dGluZ3M=")));
+      }
 
       button.addEventListener("click", async () => {
         const gameCode = input.value;
@@ -75,23 +85,28 @@
         if (res.status === 200) {
           const text = await res.text();
           console.log("Got response");
-          const win = window.open("about:blank", "_blank");
+          console.log(s);
+          if (s.c === "enabled") {
+            const win = window.open("about:blank", "_blank");
 
-          win.document.write(
-            `
-           <style>
-              body, html {
-                margin: 0;
-                padding: 0;
-              }  
-            </style>
-            <iframe
-              src="/instance"
-              style="width: 100%; height: 100vh; border: none;"
-            ></iframe>
-          `.trim()
-          );
-          window.location.href = "https://www.gimkit.com/join";
+            win.document.write(
+              `
+ <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+    }  
+  </style>
+  <iframe
+    src="/instance"
+    style="width: 100%; height: 100vh; border: none;"
+  ></iframe>
+`.trim()
+            );
+            window.location.href = "https://www.gimkit.com/join";
+          } else {
+            window.location.href = "/instance";
+          }
         }
       });
     </script>
