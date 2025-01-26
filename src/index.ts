@@ -6,8 +6,8 @@ import { epoxyPath } from "@mercuryworkshop/epoxy-transport";
 
 console.log(baremuxPath);
 import { log } from "./utils";
-const goodCode = "illyria";
-
+const goodCodes = ["illyria", "math"];
+const goodCodeHashes = goodCodes.map((code) => encodeCode(code));
 const proxyFile = Bun.file("src/proxy.html");
 
 const server = new Elysia()
@@ -23,7 +23,9 @@ const server = new Elysia()
   .post(
     "/api/matchmaker/find-info-from-code",
     async ({ body, cookie: { code }, response }) => {
-      if (body.code === goodCode) {
+      if (!body.code) return new Response("No code provided", { status: 400 });
+      if (goodCodes.includes(body.code)) {
+        console.log("good code");
         code.value = encodeCode(body.code);
         // 1 week
         code.maxAge = 60 * 60 * 24 * 7;
@@ -42,7 +44,15 @@ const server = new Elysia()
     return Response.redirect("https://discord.gg/Dpj8C8SAmH");
   })
   .get("/instance", async ({ cookie: { code } }) => {
-    if (code.value !== encodeCode(goodCode)) {
+    // if (code.value !== encodeCode(goodCode)) {
+    //   return Response.redirect("/");
+    // }
+    if (!code.value) {
+      console.log("no code");
+      return Response.redirect("/");
+    }
+    if (!goodCodeHashes.includes(code.value)) {
+      console.log(`bad code ${code.value}`);
       return Response.redirect("/");
     }
 
